@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.fincostos.data.AppRepository
 import com.example.fincostos.data.Gasto
 import com.example.fincostos.utils.DateUtils
+import com.example.fincostos.utils.IntegerMoneyTextWatcher
 import com.google.android.material.textfield.TextInputEditText
 import java.time.LocalDate
 
@@ -27,6 +28,9 @@ class GastoActivity : AppCompatActivity() {
         // Llenar fecha con hoy
         etFecha.setText(DateUtils.todayAsString())
 
+        // Agregar separador de miles al campo de valor (pesos colombianos)
+        etValor.addTextChangedListener(IntegerMoneyTextWatcher(etValor))
+
         // Listener para cancelar
         btnCancelar.setOnClickListener {
             finish()
@@ -40,7 +44,7 @@ class GastoActivity : AppCompatActivity() {
                         fecha = DateUtils.parseDate(etFecha.text.toString()),
                         tipoGasto = etTipoGasto.text.toString(),
                         concepto = etConcepto.text.toString(),
-                        valor = etValor.text.toString().toDouble()
+                        valor = etValor.text.toString().replace(",", "").toDouble()
                     )
 
                     AppRepository.agregarGasto(gasto)

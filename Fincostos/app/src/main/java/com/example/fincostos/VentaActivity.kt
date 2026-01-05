@@ -9,7 +9,11 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.fincostos.data.AppRepository
 import com.example.fincostos.data.Venta
 import com.example.fincostos.utils.DateUtils
+import com.example.fincostos.utils.IntegerMoneyTextWatcher
 import com.google.android.material.textfield.TextInputEditText
+import java.text.DecimalFormat
+import java.text.DecimalFormatSymbols
+import java.util.Locale
 
 class VentaActivity : AppCompatActivity() {
 
@@ -28,6 +32,9 @@ class VentaActivity : AppCompatActivity() {
         // Llenar fecha con hoy
         etFecha.setText(DateUtils.todayAsString())
 
+        // Agregar separador de miles a precio (pesos colombianos sin decimales)
+        etPrecio.addTextChangedListener(IntegerMoneyTextWatcher(etPrecio))
+
         // Listener para cancelar
         btnCancelar.setOnClickListener {
             finish()
@@ -37,9 +44,13 @@ class VentaActivity : AppCompatActivity() {
         val actualizarTotal: () -> Unit = {
             try {
                 val cajas = etCajas.text.toString().toIntOrNull() ?: 0
-                val precio = etPrecio.text.toString().toDoubleOrNull() ?: 0.0
+                val precio = etPrecio.text.toString().replace(",", "").toDoubleOrNull() ?: 0.0
                 val total = cajas * precio
-                etTotal.setText(String.format("%.2f", total))
+                
+                // Formatear total con separador de miles (sin decimales)
+                val symbols = DecimalFormatSymbols(Locale.US)
+                val df = DecimalFormat("#,##0", symbols)
+                etTotal.setText(df.format(total.toLong()))
             } catch (e: Exception) {
                 // Ignorar errores de conversión
             }
@@ -65,7 +76,7 @@ class VentaActivity : AppCompatActivity() {
                     val venta = Venta(
                         fecha = DateUtils.parseDate(etFecha.text.toString()),
                         cajas = etCajas.text.toString().toInt(),
-                        precioPorCaja = etPrecio.text.toString().toDouble()
+                        precioPorCaja = etPrecio.text.toString().replace(",", "").toDouble()
                     )
 
                     AppRepository.agregarVenta(venta)

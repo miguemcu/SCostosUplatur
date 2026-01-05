@@ -5,8 +5,11 @@ import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.example.fincostos.data.AppRepository
+import java.text.DecimalFormat
+import java.text.DecimalFormatSymbols
 import java.time.YearMonth
 import java.time.format.DateTimeFormatter
+import java.util.Locale
 
 class ResumenActivity : AppCompatActivity() {
 
@@ -23,6 +26,13 @@ class ResumenActivity : AppCompatActivity() {
         val btnVolver = findViewById<Button>(R.id.btnVolver)
         val btnRefrescar = findViewById<Button>(R.id.btnRefrescar)
 
+        // Función para formatear dinero (pesos colombianos sin decimales)
+        val formatearDinero: (Double) -> String = { valor ->
+            val symbols = DecimalFormatSymbols(Locale.US)
+            val df = DecimalFormat("#,##0", symbols)
+            df.format(valor.toLong())
+        }
+
         // Función para actualizar datos
         val actualizarDatos = {
             val mesActual = YearMonth.now()
@@ -38,14 +48,14 @@ class ResumenActivity : AppCompatActivity() {
             val cajas = AppRepository.obtenerTotalCajas(mesActual)
             val costoPorCaja = AppRepository.obtenerCostoPorCaja(mesActual)
 
-            // Mostrar valores
-            tvIngresos.text = "$${"%.2f".format(ingresos)}"
-            tvGastos.text = "$${"%.2f".format(gastos)}"
+            // Mostrar valores con formato de pesos colombianos
+            tvIngresos.text = "$${formatearDinero(ingresos)}"
+            tvGastos.text = "$${formatearDinero(gastos)}"
             tvCajas.text = "$cajas"
-            tvCostoPorCaja.text = "$${"%.2f".format(costoPorCaja)}"
+            tvCostoPorCaja.text = "$${formatearDinero(costoPorCaja)}"
 
             // Mostrar resultado con color
-            tvResultado.text = "$${"%.2f".format(resultado)}"
+            tvResultado.text = "$${formatearDinero(resultado)}"
             tvResultado.setTextColor(
                 if (resultado >= 0) 
                     getColor(android.R.color.holo_green_dark)
