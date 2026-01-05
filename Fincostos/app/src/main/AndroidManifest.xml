@@ -12,6 +12,18 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Fincostos">
         <activity
+            android:name=".SettingsActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ResumenActivity"
+            android:exported="false" />
+        <activity
+            android:name=".VentaActivity"
+            android:exported="false" />
+        <activity
+            android:name=".GastoActivity"
+            android:exported="false" />
+        <activity
             android:name=".MainActivity"
             android:exported="true">
             <intent-filter>

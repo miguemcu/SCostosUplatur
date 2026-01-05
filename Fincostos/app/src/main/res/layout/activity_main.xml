@@ -1,44 +1,212 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="24dp"
-    android:background="#FFFFFF">
+    android:background="@drawable/gradient_bg">
 
-    <TextView
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="FINCOSTOS"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        android:gravity="center"
-        android:paddingBottom="32dp" />
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="0dp">
 
-    <Button
-        android:id="@+id/btnGasto"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="➕ Registrar gasto"
-        android:textSize="18sp"
-        android:padding="16dp" />
+        <!-- Header -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@drawable/header_gradient"
+            android:padding="32dp"
+            android:gravity="center">
 
-    <Button
-        android:id="@+id/btnVenta"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="➕ Registrar venta"
-        android:textSize="18sp"
-        android:layout_marginTop="16dp"
-        android:padding="16dp" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="🌱"
+                android:textSize="48sp"
+                android:layout_marginBottom="12dp" />
 
-    <Button
-        android:id="@+id/btnResumen"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="📊 Resumen del mes"
-        android:textSize="18sp"
-        android:layout_marginTop="16dp"
-        android:padding="16dp" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="FINCOSTOS"
+                android:textSize="32sp"
+                android:textStyle="bold"
+                android:textColor="#FFFFFF" />
 
-</LinearLayout>
+            <!-- Nombre de la finca -->
+            <TextView
+                android:id="@+id/tvNombreFinca"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Mi Finca"
+                android:textSize="16sp"
+                android:textColor="#E0E0E0"
+                android:layout_marginTop="4dp" />
+
+            <!-- Saludo personalizado -->
+            <TextView
+                android:id="@+id/tvSaludo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="¡Hola, Finquero!"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="#FFFFFF"
+                android:layout_marginTop="12dp" />
+        </LinearLayout>
+
+        <!-- Contenedor de cards -->
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="20dp">
+
+                <!-- Card Gasto -->
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/cardGasto"
+                    android:layout_width="match_parent"
+                    android:layout_height="140dp"
+                    android:layout_marginBottom="16dp"
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="8dp"
+                    app:cardBackgroundColor="#FFF3E0">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical"
+                        android:padding="24dp"
+                        android:gravity="center">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="💸"
+                            android:textSize="42sp"
+                            android:layout_marginBottom="8dp" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Registrar Gasto"
+                            android:textSize="18sp"
+                            android:textStyle="bold"
+                            android:textColor="#E65100" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Insumos, salarios, transporte..."
+                            android:textSize="12sp"
+                            android:textColor="#BF360C"
+                            android:layout_marginTop="4dp" />
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <!-- Card Venta -->
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/cardVenta"
+                    android:layout_width="match_parent"
+                    android:layout_height="140dp"
+                    android:layout_marginBottom="16dp"
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="8dp"
+                    app:cardBackgroundColor="#E8F5E9">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical"
+                        android:padding="24dp"
+                        android:gravity="center">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="💰"
+                            android:textSize="42sp"
+                            android:layout_marginBottom="8dp" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Registrar Venta"
+                            android:textSize="18sp"
+                            android:textStyle="bold"
+                            android:textColor="#1B5E20" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Cajas vendidas y dinero recibido"
+                            android:textSize="12sp"
+                            android:textColor="#00C853"
+                            android:layout_marginTop="4dp" />
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <!-- Card Resumen -->
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/cardResumen"
+                    android:layout_width="match_parent"
+                    android:layout_height="140dp"
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="8dp"
+                    app:cardBackgroundColor="#E1F5FE">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical"
+                        android:padding="24dp"
+                        android:gravity="center">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="📊"
+                            android:textSize="42sp"
+                            android:layout_marginBottom="8dp" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Ver Resumen"
+                            android:textSize="18sp"
+                            android:textStyle="bold"
+                            android:textColor="#01579B" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Ganancias, gastos y métricas"
+                            android:textSize="12sp"
+                            android:textColor="#0277BD"
+                            android:layout_marginTop="4dp" />
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+            </LinearLayout>
+        </ScrollView>
+    </LinearLayout>
+
+    <!-- Botón flotante (FAB) de configuración -->
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fabSettings"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="24dp"
+        app:srcCompat="@android:drawable/ic_menu_manage"
+        android:contentDescription="Configuración"
+        app:tint="#FFFFFF"
+        android:backgroundTint="#2E7D32" />
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
