@@ -1,10 +1,13 @@
 package com.example.fincostos
 
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.example.fincostos.data.AppRepository
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.launch
 import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
 import java.time.YearMonth
@@ -13,9 +16,14 @@ import java.util.Locale
 
 class ResumenActivity : AppCompatActivity() {
 
+    private lateinit var repository: com.example.fincostos.data.repository.FincostosRepository
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_resumen)
+
+        // Obtener repository desde Application
+        repository = (application as FincostosApplication).repository
 
         val tvIngresos = findViewById<TextView>(R.id.tvIngresos)
         val tvGastos = findViewById<TextView>(R.id.tvGastos)
@@ -35,33 +43,43 @@ class ResumenActivity : AppCompatActivity() {
 
         // Función para actualizar datos
         val actualizarDatos = {
-            val mesActual = YearMonth.now()
-            
-            // Mostrar mes actual
-            val formatter = DateTimeFormatter.ofPattern("MMMM yyyy")
-            tvMesActual.text = mesActual.format(formatter).replaceFirstChar { it.uppercase() }
+            lifecycleScope.launch {
+                try {
+                    val mesActual = YearMonth.now()
+                    Log.d("ResumenActivity", "Cargando resumen para: $mesActual")
+                    
+                    // Mostrar mes actual
+                    val formatter = DateTimeFormatter.ofPattern("MMMM yyyy")
+                    tvMesActual.text = mesActual.format(formatter).replaceFirstChar { it.uppercase() }
 
-            // Calcular valores
-            val ingresos = AppRepository.obtenerTotalIngresos(mesActual)
-            val gastos = AppRepository.obtenerTotalGastos(mesActual)
-            val resultado = AppRepository.obtenerUtilidad(mesActual)
-            val cajas = AppRepository.obtenerTotalCajas(mesActual)
-            val costoPorCaja = AppRepository.obtenerCostoPorCaja(mesActual)
+                    // Calcular valores
+                    val ingresos = repository.obtenerTotalIngresos(mesActual)
+                    val gastos = repository.obtenerTotalGastos(mesActual)
+                    val resultado = repository.obtenerUtilidad(mesActual)
+                    val cajas = repository.obtenerTotalCajas(mesActual)
+                    val costoPorCaja = repository.obtenerCostoPorCaja(mesActual)
+                    
+                    Log.d("ResumenActivity", "Ingresos: $ingresos, Gastos: $gastos, Cajas: $cajas")
 
-            // Mostrar valores con formato de pesos colombianos
-            tvIngresos.text = "$${formatearDinero(ingresos)}"
-            tvGastos.text = "$${formatearDinero(gastos)}"
-            tvCajas.text = "$cajas"
-            tvCostoPorCaja.text = "$${formatearDinero(costoPorCaja)}"
+                    // Mostrar valores con formato de pesos colombianos
+                    tvIngresos.text = "\$${formatearDinero(ingresos)}"
+                    tvGastos.text = "\$${formatearDinero(gastos)}"
+                    tvCajas.text = "$cajas"
+                    tvCostoPorCaja.text = "\$${formatearDinero(costoPorCaja)}"
 
-            // Mostrar resultado con color
-            tvResultado.text = "$${formatearDinero(resultado)}"
-            tvResultado.setTextColor(
-                if (resultado >= 0) 
-                    getColor(android.R.color.holo_green_dark)
-                else 
-                    getColor(android.R.color.holo_red_dark)
-            )
+                    // Mostrar resultado con color
+                    tvResultado.text = "\$${formatearDinero(resultado)}"
+                    tvResultado.setTextColor(
+                        if (resultado >= 0) 
+                            getColor(android.R.color.holo_green_dark)
+                        else 
+                            getColor(android.R.color.holo_red_dark)
+                    )
+                } catch (e: Exception) {
+                    Log.e("ResumenActivity", "Error cargando resumen", e)
+                    Toast.makeText(this@ResumenActivity, "Error: ${e.message}", Toast.LENGTH_LONG).show()
+                }
+            }
         }
 
         // Ejecutar al iniciar

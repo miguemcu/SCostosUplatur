@@ -3,23 +3,30 @@ package com.example.fincostos
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.widget.Button
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.example.fincostos.data.AppRepository
+import androidx.lifecycle.lifecycleScope
 import com.example.fincostos.data.Venta
 import com.example.fincostos.utils.DateUtils
 import com.example.fincostos.utils.IntegerMoneyTextWatcher
 import com.google.android.material.textfield.TextInputEditText
+import kotlinx.coroutines.launch
 import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
 import java.util.Locale
 
 class VentaActivity : AppCompatActivity() {
 
+    private lateinit var repository: com.example.fincostos.data.repository.FincostosRepository
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_venta)
+
+        // Obtener repository desde Application
+        repository = (application as FincostosApplication).repository
 
         // Referencias a los campos
         val etFecha = findViewById<TextInputEditText>(R.id.etFechaVenta)
@@ -72,20 +79,25 @@ class VentaActivity : AppCompatActivity() {
         // Listener para guardar
         btnGuardar.setOnClickListener {
             if (validarCampos(etFecha, etCajas, etPrecio)) {
-                try {
-                    val venta = Venta(
-                        fecha = DateUtils.parseDate(etFecha.text.toString()),
-                        cajas = etCajas.text.toString().toInt(),
-                        precioPorCaja = etPrecio.text.toString().replace(",", "").toDouble()
-                    )
+                lifecycleScope.launch {
+                    try {
+                        val venta = Venta(
+                            fecha = DateUtils.parseDate(etFecha.text.toString()),
+                            cajas = etCajas.text.toString().toInt(),
+                            precioPorCaja = etPrecio.text.toString().replace(",", "").toDouble()
+                        )
 
-                    AppRepository.agregarVenta(venta)
-                    Toast.makeText(this, "Venta registrada ✓", Toast.LENGTH_SHORT).show()
-                    
-                    // Volver a main
-                    finish()
-                } catch (e: Exception) {
-                    Toast.makeText(this, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
+                        Log.d("VentaActivity", "Guardando venta: $venta")
+                        repository.agregarVenta(venta)
+                        Log.d("VentaActivity", "Venta guardada exitosamente")
+                        Toast.makeText(this@VentaActivity, "Venta registrada ✓", Toast.LENGTH_SHORT).show()
+                        
+                        // Volver a main
+                        finish()
+                    } catch (e: Exception) {
+                        Log.e("VentaActivity", "Error guardando venta", e)
+                        Toast.makeText(this@VentaActivity, "Error: ${e.message}", Toast.LENGTH_LONG).show()
+                    }
                 }
             }
         }

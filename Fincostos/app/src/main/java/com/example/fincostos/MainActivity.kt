@@ -4,15 +4,21 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import com.example.fincostos.data.AppRepository
+import androidx.lifecycle.lifecycleScope
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
+
+    private lateinit var repository: com.example.fincostos.data.repository.FincostosRepository
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        // Obtener repository desde Application
+        repository = (application as FincostosApplication).repository
 
         val cardGasto = findViewById<MaterialCardView>(R.id.cardGasto)
         val cardVenta = findViewById<MaterialCardView>(R.id.cardVenta)
@@ -52,8 +58,14 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun actualizarDatos(tvNombreFinca: TextView, tvSaludo: TextView) {
-        val config = AppRepository.obtenerConfiguracion()
-        tvNombreFinca.text = config.nombreFinca
-        tvSaludo.text = "¡Hola, ${config.nombreFinquero}!"
+        lifecycleScope.launch {
+            try {
+                val config = repository.obtenerConfiguracion()
+                tvNombreFinca.text = config.nombreFinca
+                tvSaludo.text = "¡Hola, ${config.nombreFinquero}!"
+            } catch (e: Exception) {
+                // Error al cargar configuración
+            }
+        }
     }
 }
