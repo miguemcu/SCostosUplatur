@@ -17,6 +17,7 @@ import java.util.Locale
 class ResumenActivity : AppCompatActivity() {
 
     private lateinit var repository: com.example.fincostos.data.repository.FincostosRepository
+    private var mesSeleccionado: YearMonth = YearMonth.now()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,6 +34,8 @@ class ResumenActivity : AppCompatActivity() {
         val tvMesActual = findViewById<TextView>(R.id.tvMesActual)
         val btnVolver = findViewById<Button>(R.id.btnVolver)
         val btnRefrescar = findViewById<Button>(R.id.btnRefrescar)
+        val btnMesAnterior = findViewById<Button>(R.id.btnMesAnterior)
+        val btnMesSiguiente = findViewById<Button>(R.id.btnMesSiguiente)
 
         // Función para formatear dinero (pesos colombianos sin decimales)
         val formatearDinero: (Double) -> String = { valor ->
@@ -42,22 +45,21 @@ class ResumenActivity : AppCompatActivity() {
         }
 
         // Función para actualizar datos
-        val actualizarDatos = {
+        val actualizarDatos: (YearMonth) -> Unit = { mes ->
             lifecycleScope.launch {
                 try {
-                    val mesActual = YearMonth.now()
-                    Log.d("ResumenActivity", "Cargando resumen para: $mesActual")
+                    Log.d("ResumenActivity", "Cargando resumen para: $mes")
                     
-                    // Mostrar mes actual
+                    // Mostrar mes seleccionado
                     val formatter = DateTimeFormatter.ofPattern("MMMM yyyy")
-                    tvMesActual.text = mesActual.format(formatter).replaceFirstChar { it.uppercase() }
+                    tvMesActual.text = mes.format(formatter).replaceFirstChar { it.uppercase() }
 
                     // Calcular valores
-                    val ingresos = repository.obtenerTotalIngresos(mesActual)
-                    val gastos = repository.obtenerTotalGastos(mesActual)
-                    val resultado = repository.obtenerUtilidad(mesActual)
-                    val cajas = repository.obtenerTotalCajas(mesActual)
-                    val costoPorCaja = repository.obtenerCostoPorCaja(mesActual)
+                    val ingresos = repository.obtenerTotalIngresos(mes)
+                    val gastos = repository.obtenerTotalGastos(mes)
+                    val resultado = repository.obtenerUtilidad(mes)
+                    val cajas = repository.obtenerTotalCajas(mes)
+                    val costoPorCaja = repository.obtenerCostoPorCaja(mes)
                     
                     Log.d("ResumenActivity", "Ingresos: $ingresos, Gastos: $gastos, Cajas: $cajas")
 
@@ -75,6 +77,9 @@ class ResumenActivity : AppCompatActivity() {
                         else 
                             getColor(android.R.color.holo_red_dark)
                     )
+                    
+                    // Deshabilitar botón siguiente si es mes actual
+                    btnMesSiguiente.isEnabled = mes < YearMonth.now()
                 } catch (e: Exception) {
                     Log.e("ResumenActivity", "Error cargando resumen", e)
                     Toast.makeText(this@ResumenActivity, "Error: ${e.message}", Toast.LENGTH_LONG).show()
@@ -83,7 +88,7 @@ class ResumenActivity : AppCompatActivity() {
         }
 
         // Ejecutar al iniciar
-        actualizarDatos()
+        actualizarDatos(mesSeleccionado)
 
         // Botón volver
         btnVolver.setOnClickListener {
@@ -92,7 +97,19 @@ class ResumenActivity : AppCompatActivity() {
 
         // Botón refrescar
         btnRefrescar.setOnClickListener {
-            actualizarDatos()
+            actualizarDatos(mesSeleccionado)
+        }
+        
+        // Botón mes anterior
+        btnMesAnterior.setOnClickListener {
+            mesSeleccionado = mesSeleccionado.minusMonths(1)
+            actualizarDatos(mesSeleccionado)
+        }
+        
+        // Botón mes siguiente
+        btnMesSiguiente.setOnClickListener {
+            mesSeleccionado = mesSeleccionado.plusMonths(1)
+            actualizarDatos(mesSeleccionado)
         }
     }
 }

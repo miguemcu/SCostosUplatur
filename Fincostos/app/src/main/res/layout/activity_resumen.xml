@@ -43,6 +43,35 @@
                 android:textSize="14sp"
                 android:textColor="#E0E0E0"
                 android:layout_marginTop="8dp" />
+
+            <!-- Navegación de meses -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:layout_marginTop="16dp">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnMesAnterior"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="◀ Anterior"
+                    android:textSize="12sp"
+                    android:layout_marginEnd="8dp"
+                    app:cornerRadius="8dp"
+                    android:backgroundTint="#FFC107" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnMesSiguiente"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Siguiente ▶"
+                    android:textSize="12sp"
+                    android:layout_marginStart="8dp"
+                    app:cornerRadius="8dp"
+                    android:backgroundTint="#FFC107" />
+            </LinearLayout>
         </LinearLayout>
 
         <!-- Contenedor de métricas -->
